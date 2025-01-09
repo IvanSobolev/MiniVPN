@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniVPN.TgBot", "MiniVPN.TgBot\MiniVPN.TgBot.csproj", "{9CE36C66-C017-4AFD-8D25-D4F58B35307B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniVPN.Api", "MiniVPN.Api\MiniVPN.Api.csproj", "{89FA414D-CBBB-4DB4-B0B8-65EA6276088F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9CE36C66-C017-4AFD-8D25-D4F58B35307B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CE36C66-C017-4AFD-8D25-D4F58B35307B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CE36C66-C017-4AFD-8D25-D4F58B35307B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CE36C66-C017-4AFD-8D25-D4F58B35307B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89FA414D-CBBB-4DB4-B0B8-65EA6276088F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89FA414D-CBBB-4DB4-B0B8-65EA6276088F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89FA414D-CBBB-4DB4-B0B8-65EA6276088F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89FA414D-CBBB-4DB4-B0B8-65EA6276088F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
