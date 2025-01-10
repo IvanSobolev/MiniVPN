@@ -57,7 +57,7 @@ public class BotDataBaseManager
                                                 $"Актуальный код: `{user.ActualVpnCode}`\n" +
                                                 $"Код активен `{(user.PaidUntil - DateTime.Now).Days}` суток", 
                 parseMode: ParseMode.Markdown,
-                replyMarkup: await GetInlineKeyboardForUser(user), 
+                replyMarkup: await GetReplyKeyboardForUser(user), 
                 cancellationToken: _cts.Token);
         }
 
@@ -87,6 +87,23 @@ public class BotDataBaseManager
         return Task.FromResult(new InlineKeyboardMarkup(lines));
     }
     
+    Task<ReplyKeyboardMarkup> GetReplyKeyboardForUser(UserDB user)
+    {
+        List<List<KeyboardButton>> lines = new List<List<KeyboardButton>> { new List<KeyboardButton>() };
+        
+        for (int i = 0; i < _operations.Count; i++)
+        {
+            if (_operations[i].NeedRoleDb == user.roleDb)
+            {
+                lines.Last().Add(KeyboardButton.W("test", new WebAppInfo { Url = "https://localhost:5010/swagger/index.html" }));
+                if (lines.Last().Count() == 2)
+                { lines.Add(new List<KeyboardButton>()); }
+            }
+        }
+
+        return Task.FromResult(new ReplyKeyboardMarkup(lines) { ResizeKeyboard = true });
+    }
+    
     async Task OnUpdate(Update update)
     {
         if (update is { CallbackQuery: { } query })
@@ -103,10 +120,7 @@ public class BotDataBaseManager
             try
             { operationIndex = Convert.ToInt32(query.Data); }
             catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            { Console.WriteLine(e); throw; }
                 
             if (_operations[operationIndex].NeedRoleDb == user.roleDb)
             {
