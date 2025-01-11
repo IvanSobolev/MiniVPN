@@ -1,7 +1,8 @@
 ﻿// Получаем параметры из URL
 const urlParams = new URLSearchParams(window.location.search);
 const questionsParam = urlParams.get('question');
-const callbackUrl = urlParams.get('callbackUrl');
+const callbackUrlTemplate = urlParams.get('callbackUrl');
+const requestType = (urlParams.get('method') || 'POST').toUpperCase(); // Тип запроса (по умолчанию POST)
 
 // Парсим вопросы
 const questions = questionsParam.split(',').map(q => {
@@ -41,6 +42,26 @@ questions.forEach(({ name, type }) => {
     questionsContainer.appendChild(input);
 });
 
+// Функция для отображения JSON-ответа в удобном формате
+function displayJsonResponse(responseJson, container) {
+    container.innerHTML = ''; // Очищаем контейнер
+
+    for (const [key, value] of Object.entries(responseJson)) {
+        const keyElement = document.createElement('strong');
+        keyElement.textContent = `${key}: `;
+
+        const valueElement = document.createElement('div');
+        valueElement.textContent = value;
+
+        const wrapper = document.createElement('div');
+        wrapper.style.marginBottom = '10px';
+        wrapper.appendChild(keyElement);
+        wrapper.appendChild(valueElement);
+
+        container.appendChild(wrapper);
+    }
+}
+
 // Обработка отправки формы
 document.getElementById('dynamicForm').addEventListener('submit', async function(event) {
     event.preventDefault();
@@ -58,32 +79,60 @@ document.getElementById('dynamicForm').addEventListener('submit', async function
         }
     });
 
-    // Парсим initData и hash из callbackUrl
-    const callbackParams = new URL(callbackUrl).searchParams;
-    const initData = callbackParams.get('initData');
-    const hash = callbackParams.get('hash');
+    // Ссылка на контейнер для отображения ответа
+    const serverResponseDiv = document.getElementById('serverResponse');
 
-    // Добавляем initData и hash в тело запроса
-    formData.initData = initData;
-    formData.hash = hash;
+    // Формируем URL для GET/DELETE
+    let finalCallbackUrl = callbackUrlTemplate;
+    if (requestType === 'GET' || requestType === 'DELETE') {
+        // Замена параметров в URL
+        finalCallbackUrl = callbackUrlTemplate.replace(/\{(\w+)\}/g, (_, key) => formData[key] || `{${key}}`);
+        // Добавление остальных параметров в query string
+        const queryParams = new URLSearchParams(formData).toString();
+        if (queryParams) {
+            finalCallbackUrl += `?${queryParams}`;
+        }
+    }
 
-    // Отправляем данные на указанный в callbackUrl сервер
+    // Отправляем запрос на сервер
     try {
-        const response = await fetch(callbackUrl, {
-            method: 'POST',
+        const fetchOptions = {
+            method: requestType,
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(formData),
-        });
+        };
 
-        if (response.ok) {
-            alert('Form submitted successfully!');
+        // Для POST и PUT добавляем тело запроса
+        if (requestType === 'POST' || requestType === 'PUT') {
+            fetchOptions.body = JSON.stringify(formData);
+        }
+
+        const response = await fetch(finalCallbackUrl, fetchOptions);
+
+        // Проверяем тип ответа
+        if (response.headers.get('Content-Type')?.includes('application/json')) {
+            const jsonResponse = await response.json();
+
+            // Отображаем JSON в удобном виде
+            serverResponseDiv.style.display = 'block';
+            serverResponseDiv.style.borderColor = '#4CAF50';
+            serverResponseDiv.style.color = '#4CAF50';
+            displayJsonResponse(jsonResponse, serverResponseDiv);
         } else {
-            alert('Error submitting the form.');
+            const responseText = await response.text();
+
+            // Отображаем текстовый ответ
+            serverResponseDiv.style.display = 'block';
+            serverResponseDiv.textContent = `Success: ${responseText}`;
+            serverResponseDiv.style.borderColor = '#4CAF50';
+            serverResponseDiv.style.color = '#4CAF50';
         }
     } catch (error) {
         console.error('Submission error:', error);
-        alert('An error occurred while submitting the form.');
+        serverResponseDiv.style.display = 'block';
+        serverResponseDiv.textContent = 'An error occurred while submitting the form.';
+        serverResponseDiv.style.borderColor = '#f44336';
+        serverResponseDiv.style.color = '#f44336';
     }
 });
