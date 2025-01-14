@@ -11,22 +11,40 @@ form {
     width: 300px;
 }
 
-label {
-    margin-bottom: 5px;
-    color: #555;
+#questionsContainer {
+    display: flex;
+    flex-direction: column; /* Поля идут вертикально */
+    gap: 15px; /* Отступ между полями */
 }
 
-input, button {
-    margin-bottom: 15px;
+.field-row {
+    display: flex;
+    align-items: center; /* Выравнивание по вертикали */
+    gap: 10px; /* Расстояние между меткой и полем ввода */
+}
+
+label {
+    color: #555;
+    width: 50px; /* Фиксированная ширина для выравнивания */
+}
+
+input {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    flex-grow: 1; /* Поле ввода растягивается по ширине */
+    box-sizing: border-box;
 }
 
 button {
     cursor: pointer;
     background-color: #4CAF50;
     color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    font-size: 16px;
 }
 
 button:hover {

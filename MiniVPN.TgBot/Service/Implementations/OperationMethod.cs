@@ -7,4 +7,5 @@ namespace UserChecker.ClientTgBot.Service.Implementations;
 
 public class OperationMethod(TelegramBotClient bot)
 {
+    
 }

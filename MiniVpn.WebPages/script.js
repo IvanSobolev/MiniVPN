@@ -15,6 +15,9 @@ const questionsContainer = document.getElementById('questionsContainer');
 
 // Динамически создаем поля для каждого вопроса
 questions.forEach(({ name, type }) => {
+    const fieldRow = document.createElement('div'); // Контейнер для строки
+    fieldRow.className = 'field-row';
+
     const label = document.createElement('label');
     label.textContent = name;
 
@@ -38,9 +41,11 @@ questions.forEach(({ name, type }) => {
             input.type = 'text'; // По умолчанию текстовое поле
     }
 
-    questionsContainer.appendChild(label);
-    questionsContainer.appendChild(input);
+    fieldRow.appendChild(label);
+    fieldRow.appendChild(input);
+    questionsContainer.appendChild(fieldRow);
 });
+
 
 // Функция для отображения JSON-ответа в удобном формате
 function displayJsonResponse(responseJson, container) {
